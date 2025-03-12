@@ -1,39 +1,28 @@
+name: Deploy AWS SAM App
+
 on:
   push:
     branches:
       - main
 
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  AWS_REGION: eu-west-1
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    
     steps:
-      # Checkout with submodules
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          submodules: recursive
-      # Setup Node.js, feel free to modify with your specific language
-      - uses: actions/setup-node@v3
-      # Configure AWS SAM CLI and AWS Credentials
-      - uses: aws-actions/setup-sam@v2
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::499202726088:role/GitHubActionsRole
-          role-session-name: aws-sam-template-node-ts-github-actions
-          aws-region: ${{ env.AWS_REGION }}
-      # sam build 
-      - run: sam build
-      # Run unit tests
-      - name: Install npm modules
-        run: npm install
-      - name: Run tests
-        run: yarn test
-      # sam deploy
-      - run: sam deploy --no-fail-on-empty-changeset --no-confirm-changeset --stack-name stack-name todo-aws
+          role-to-assume: arn:aws:iam::569442125813:role/GithubAction
+          aws-region: eu-west-1
+
+      - name: Deploy with AWS SAM
+        run: |
+          sam build
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
