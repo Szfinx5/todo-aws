@@ -15,9 +15,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Debug AWS Credentials
-        run: aws sts get-caller-identity
         
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -26,6 +23,9 @@ jobs:
           aws-region: eu-west-1
           role-session-name: GitHubActionsSession
 
+      - name: Debug AWS Credentials
+        run: aws sts get-caller-identity
+        
       - name: Deploy with AWS SAM
         run: |
           sam build
