@@ -15,16 +15,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
+      - name: Check AWS credentials
+        run: |
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+          echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
+    
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::569442125813:role/GithubAction
           aws-region: eu-west-1
           role-session-name: GitHubActionsSession
-
-      - name: Debug AWS Credentials
-        run: aws sts get-caller-identity
         
       - name: Deploy with AWS SAM
         run: |
