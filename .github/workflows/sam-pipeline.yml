@@ -27,7 +27,6 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::569442125813:role/GithubAction
           aws-region: eu-west-1
-          role-session-name: GitHubActionsSession
         
       - name: Deploy with AWS SAM
         run: |
