@@ -1,34 +1,21 @@
-name: Deploy AWS SAM App
-
 on:
   push:
     branches:
       - main
-
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check AWS credentials
-        run: |
-          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
-          echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
-    
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+      - uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::569442125813:role/GithubAction
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
-        
-      - name: Deploy with AWS SAM
-        run: |
-          sam build
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      # sam build
+      - run: sam build --use-container
+
+      # sam deploy
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name sam-hello-world --s3-bucket github-sam-bucket --capabilities CAPABILITY_IAM --region eu-west-1
