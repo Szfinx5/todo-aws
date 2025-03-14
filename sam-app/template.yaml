@@ -113,11 +113,6 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
 
-  Environment:
-  Variables:
-    SAMPLE_TABLE: !Ref SampleTable
-    AWS_REGION: !Ref AWS::Region
-
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
